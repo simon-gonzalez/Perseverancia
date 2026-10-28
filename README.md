@@ -7,16 +7,29 @@ Simulación 3D del rover Perseverance (Percy) en Marte, hecha con Vite + Three.j
 - Control de misión con telemetría real (patrón de Open MCT): distancia recorrida, altura del terreno e inclinación (historial de manejos de la NASA) y tiempo de luz Tierra–Marte calculado en vivo.
 - Las cámaras de Percy (Mastcam-Z, NavCam, HazCam frontal, WATSON) abren fotos reales de Marte.
 
+## Requisitos
+
+- [Node.js](https://nodejs.org) 20.19 o superior (o 22.12+).
+- Google Chrome instalado, solo para `npm run check`.
+
+Todo lo demás (modelo 3D, decodificador Draco, datos y fotos) ya está en el repositorio; no se descarga nada al ejecutar.
+
 ## Cómo correrlo
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173
-npm run check    # Chrome invisible: captura, errores de consola, telemetría y fotos
-npm run build    # versión de producción en dist/
+npm run dev      # abre http://localhost:5173
 ```
 
-`npm run check` usa el Chrome instalado (no descarga navegadores) y guarda capturas en `screenshots/`.
+En **otra terminal**, con `npm run dev` corriendo:
+
+```bash
+npm run check    # Chrome invisible: captura, errores de consola, telemetría y fotos
+```
+
+`npm run check` usa el Chrome instalado (no descarga navegadores), maneja el rover, prueba la tecla T y las 4 cámaras, y guarda capturas en `screenshots/` (`check.png`, `hidden.png`, `foto.png`). Termina con error si algo falla.
+
+Para la versión de producción: `npm run build` (queda en `dist/`).
 
 ## Controles
 
@@ -41,6 +54,7 @@ npm run build    # versión de producción en dist/
 | `src/cameras.js` | Puntos de las cámaras y visor de fotos |
 | `scripts/check.mjs` | Verificación automática |
 | `docs/mapa-del-repo.html` | Mapa de Open MCT (NASA) para entender la telemetría |
+| `docs/plan-inicial.md` | Plan de la primera fase (paisaje), como registro |
 
 ## Datos y créditos
 

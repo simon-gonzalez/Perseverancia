@@ -22,7 +22,13 @@ page.on('console', (msg) => {
 page.on('pageerror', (err) => errors.push(`[pageerror] ${err.message}`));
 page.on('requestfailed', (req) => errors.push(`[request] ${req.url()} ${req.failure()?.errorText}`));
 
-await page.goto(URL, { waitUntil: 'load' });
+try {
+  await page.goto(URL, { waitUntil: 'load' });
+} catch {
+  console.error(`No se pudo abrir ${URL}. ¿Está corriendo el servidor? Ejecuta "npm run dev" en otra terminal.`);
+  await browser.close();
+  process.exit(1);
+}
 await page.waitForTimeout(4000);
 await page.screenshot({ path: 'screenshots/start.png' });
 // Maneja el rover con teclas reales; la simulación avanza con pasos fijos (ver __simulate)
