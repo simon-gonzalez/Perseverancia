@@ -40,6 +40,7 @@ npm run build    # versión de producción en dist/
 | `src/missionControl.js` | Panel del control de misión |
 | `src/cameras.js` | Puntos de las cámaras y visor de fotos |
 | `scripts/check.mjs` | Verificación automática |
+| `docs/mapa-del-repo.html` | Mapa de Open MCT (NASA) para entender la telemetría |
 
 ## Datos y créditos
 

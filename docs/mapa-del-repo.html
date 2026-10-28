@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa de Open MCT</title>
+<style>
+  :root {
+    --bg: #faf6f1; --card: #ffffff; --ink: #2a1e17; --muted: #6f5d52;
+    --line: #e4d6c8; --accent: #b4532a; --accent2: #2f6f8f; --chip: #f3e7db;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1512; --card: #261e1a; --ink: #f1e6dc; --muted: #b9a596;
+      --line: #3d312a; --accent: #e07a4b; --accent2: #6fb3d2; --chip: #33271f;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; }
+  h2 { margin: 48px 0 12px; font-size: 1.4rem; border-bottom: 2px solid var(--line); padding-bottom: 6px; }
+  .lead { font-size: 1.25rem; background: var(--card); border-left: 5px solid var(--accent);
+    padding: 16px 20px; border-radius: 8px; }
+  code, .ref { font: 13px/1.4 ui-monospace, Consolas, monospace; background: var(--chip);
+    padding: 2px 6px; border-radius: 4px; word-break: break-all; }
+  .muted { color: var(--muted); }
+  /* Diagrama */
+  .lanes { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 760px) { .lanes { grid-template-columns: 1fr; } }
+  .lane h3 { margin: 0 0 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: .05em; }
+  .lane.a h3 { color: var(--accent2); } .lane.b h3 { color: var(--accent); }
+  .box { background: var(--card); border: 2px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+  .lane.a .box { border-color: var(--accent2); } .lane.b .box { border-color: var(--accent); }
+  .box b { display: block; }
+  .box p { margin: 4px 0 6px; font-size: .95rem; }
+  .arrow { text-align: center; color: var(--muted); font-size: 1.3rem; line-height: 1.6; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .card .n { color: var(--accent); font-weight: 700; font-size: 1.4rem; }
+  ol.steps li { margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
+  td, th { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  .ok { color: #2e8b57; font-weight: 700; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Mapa de Open MCT, para conectar a Percy</h1>
+<p class="lead">Open MCT es como un <b>tablero de control armable</b> que la NASA usa para ver, en una página web, lo que está pasando con sus naves: tú le dices de dónde vienen los datos y él los convierte en gráficas, tablas y paneles.</p>
+
+<h2>El diagrama</h2>
+<p class="muted">A la izquierda, cómo está armado el programa. A la derecha, el viaje de un dato desde que llega hasta que se dibuja en una gráfica. Cada caja dice en qué archivo y en qué línea vive (todo dentro de la carpeta del repositorio).</p>
+
+<div class="lanes">
+  <div class="lane a">
+    <h3>Cómo está armado</h3>
+    <div class="box"><b>1. Punto de partida</b><p>Se crea "la aplicación", una sola, que todo lo demás comparte.</p><span class="ref">openmct.js:35</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>2. El núcleo (MCT)</b><p>La caja central: guarda todas las herramientas (objetos, tipos, telemetría, tiempo, menús) y trae plugins de fábrica.</p><span class="ref">src/MCT.js:77</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>3. Enchufe de plugins</b><p>Un plugin es una pieza que se "enchufa": el núcleo simplemente la ejecuta pasándose a sí mismo.</p><span class="ref">src/MCT.js:435</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>4. Catálogo de plugins</b><p>La lista de piezas que vienen incluidas (gráficas, tablas, reloj, guardado…).</p><span class="ref">src/plugins/plugins.js:97</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>5. Tipos</b><p>Define qué clases de cosas existen (por ejemplo "sensor de Percy"), con nombre e ícono.</p><span class="ref">src/api/types/TypeRegistry.js:59</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>6. Objetos y raíces</b><p>Las "cosas" que aparecen en el árbol de la izquierda de la pantalla, y la carpeta principal donde cuelgan.</p><span class="ref">src/api/objects/ObjectAPI.js:168</span> <span class="ref">ObjectAPI.js:498</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>7. Composición</b><p>Decide qué cosa contiene a cuál (la carpeta "Percy" contiene "batería", "temperatura"…).</p><span class="ref">src/api/composition/CompositionAPI.js:67</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>8. Telemetría</b><p>El cartero: pide datos pasados y se suscribe a los nuevos, hablando con quien los provee.</p><span class="ref">src/api/telemetry/TelemetryAPI.js:82</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>9. Arranque</b><p>Espera a que cargue la página, monta la pantalla y avisa "¡empezamos!".</p><span class="ref">src/MCT.js:411</span> <span class="ref">MCT.js:340</span></div>
+  </div>
+
+  <div class="lane b">
+    <h3>Viaje de un dato hasta la gráfica</h3>
+    <div class="box"><b>A. Se registra el proveedor</b><p>Quien trae los datos se presenta; Open MCT lo anota según lo que sabe hacer (datos pasados, en vivo, descripción).</p><span class="ref">src/api/telemetry/TelemetryAPI.js:167</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>B. Se describe el dato</b><p>Una "ficha" dice qué campos trae (hora, voltaje…) y cuál es el eje del tiempo.</p><span class="ref">example/generator/GeneratorMetadataProvider.js:146</span> <span class="ref">TelemetryAPI.js:790</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>C. La gráfica arma una serie</b><p>Por cada sensor, la gráfica crea una línea y lee su ficha para saber cómo mostrar los números.</p><span class="ref">src/plugins/plot/configuration/PlotSeries.js:111</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>D. Se mira el reloj</b><p>La gráfica pregunta "¿qué rango de tiempo está viendo el usuario?" y pide datos de ese rango.</p><span class="ref">src/plugins/plot/MctPlot.vue:633</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>E. Pide datos del pasado</b><p>Le pide al cartero el historial; él lo reenvía al primer proveedor que diga "yo tengo eso".</p><span class="ref">src/plugins/plot/configuration/PlotSeries.js:228</span> <span class="ref">TelemetryAPI.js:470</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>F. Se suscribe a lo nuevo</b><p>Además queda "suscrita": cada dato nuevo que llega se agrega solo.</p><span class="ref">PlotSeries.js:213</span> <span class="ref">TelemetryAPI.js:529</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>G. Se convierte en puntos</b><p>Cada dato se traduce a un punto (tiempo, valor), se ordena y se avisa "¡hay punto nuevo!" para redibujar.</p><span class="ref">PlotSeries.js:257</span> <span class="ref">PlotSeries.js:471</span></div>
+    <div class="arrow">↓</div>
+    <div class="box"><b>H. Si cambias el rango, se repite</b><p>Al mover el control del tiempo, la gráfica vuelve a pedir datos para el nuevo rango.</p><span class="ref">src/plugins/plot/MctPlot.vue:548</span></div>
+  </div>
+</div>
+
+<h2>Las 5 piezas clave para conectar Percy</h2>
+<div class="cards">
+  <div class="card"><div class="n">1</div><b>Un plugin propio</b><p>Una pieza "enchufable" que agrupa todo lo de Percy. Se enchufa con <code>openmct.install(...)</code>.</p><span class="ref">src/MCT.js:435</span></div>
+  <div class="card"><div class="n">2</div><b>Un tipo "sensor de Percy"</b><p>Para que Open MCT sepa qué es cada cosa y le ponga ícono.</p><span class="ref">src/api/types/TypeRegistry.js:59</span></div>
+  <div class="card"><div class="n">3</div><b>Una carpeta raíz "Percy"</b><p>Lo que verás en el árbol de la izquierda, con sus sensores adentro.</p><span class="ref">src/api/objects/ObjectAPI.js:498</span></div>
+  <div class="card"><div class="n">4</div><b>La ficha de cada sensor</b><p>Qué campos trae (hora, valor, unidad) y cuál es el tiempo.</p><span class="ref">example/generator/GeneratorMetadataProvider.js:146</span></div>
+  <div class="card"><div class="n">5</div><b>El proveedor de telemetría</b><p>El que entrega datos pasados (<i>request</i>) y en vivo (<i>subscribe</i>).</p><span class="ref">src/api/telemetry/TelemetryAPI.js:167</span></div>
+</div>
+
+<h2>Cómo conectamos Percy</h2>
+<ol class="steps">
+  <li><b>Copiar el ejemplo que ya funciona.</b> La carpeta <code>example/generator/</code> es una plantilla completa: inventa ondas seno y coseno. La usamos como molde.</li>
+  <li><b>Decidir qué datos de Percy mostramos.</b> Por ejemplo: posición (x, z), rumbo, velocidad, inclinación y metros recorridos. Todo sale de nuestra simulación (<code>src/rover.js</code>).</li>
+  <li><b>Hacer que la simulación "transmita".</b> La página 3D envía esos datos varias veces por segundo por un canal (un <i>WebSocket</i> o <code>BroadcastChannel</code>) y guarda un historial corto.</li>
+  <li><b>Crear el plugin "Percy" en Open MCT</b> con: un tipo (pieza 2), una carpeta raíz con un objeto por sensor (pieza 3), la ficha de cada sensor indicando que "utc" es el tiempo y el valor es lo que se grafica (pieza 4).</li>
+  <li><b>Escribir el proveedor</b> (pieza 5): <code>supportsRequest</code> + <code>request</code> devuelven el historial del rango pedido; <code>supportsSubscribe</code> + <code>subscribe</code> reenvían cada dato nuevo del canal. Se registra con <code>openmct.telemetry.addProvider(...)</code>.</li>
+  <li><b>Enchufarlo</b> con <code>openmct.install(PercyPlugin())</code> antes de <code>openmct.start()</code> (en el ejemplo de la NASA eso está en <code>index.html:240</code>).</li>
+  <li><b>Probar:</b> abrir Open MCT, entrar a la carpeta "Percy", abrir "velocidad" y manejar el rover con WASD: la línea debería moverse en vivo.</li>
+</ol>
+
+<h2>Comprobaciones hechas</h2>
+<p class="muted">Abrí de nuevo estas líneas en el repositorio y confirmé que hacen lo que dice su caja.</p>
+<table>
+  <tr><th>Caja</th><th>Archivo:línea</th><th>Lo que hay en esa línea</th><th></th></tr>
+  <tr><td>A. Se registra el proveedor</td><td><span class="ref">src/api/telemetry/TelemetryAPI.js:167</span></td><td><code>addProvider(provider) {</code> y debajo lo anota en las listas de "pasado", "en vivo" y "ficha" según <code>supportsRequest</code>/<code>supportsSubscribe</code>/<code>supportsMetadata</code>.</td><td class="ok">✔</td></tr>
+  <tr><td>E. Pide datos del pasado</td><td><span class="ref">src/plugins/plot/configuration/PlotSeries.js:228</span></td><td><code>const points = await this.openmct.telemetry.request(this.domainObject, options);</code></td><td class="ok">✔</td></tr>
+  <tr><td>H. Si cambias el rango, se repite</td><td><span class="ref">src/plugins/plot/MctPlot.vue:548</span></td><td><code>this.timeContext.on('boundsChanged', this.updateDisplayBounds);</code></td><td class="ok">✔</td></tr>
+</table>
+
+<h2>Commit analizado</h2>
+<p><span class="ref">e09bfaf47856b2b7ae2ea74334800b26fd27a41e</span> · 2026-10-06 · <i>[Documentation] Add AGENTS.md contributor guidance (#8379)</i><br>
+<span class="muted">Repositorio: github.com/nasa/openmct, rama principal. Solo se leyó; no se instaló ni se modificó nada.</span></p>
+
+</main>
+</body>
+</html>
