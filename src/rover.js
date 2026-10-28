@@ -35,7 +35,9 @@ export function createRover(scene) {
     const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
     const s = REAL_LENGTH / Math.max(size.x, size.z);
-    model.scale.setScalar(s);    box.setFromObject(model);
+    model.scale.setScalar(s);
+    // El GLB de la NASA mira hacia +Z; el rover avanza hacia -Z
+    model.rotation.y = Math.PI;    box.setFromObject(model);
     const center = box.getCenter(new THREE.Vector3());
     model.position.set(-center.x, -box.min.y, -center.z);
     tilt.add(model);
@@ -45,6 +47,7 @@ export function createRover(scene) {
       if (CAMERA_RE.test(o.name) && !/bracket|cover|wiring/i.test(o.name)) cams.push(o.name);
     });
     console.log('Cámaras del rover:', cams.join(', '));
+    state.model = model;
     state.ready = true;
   });
 

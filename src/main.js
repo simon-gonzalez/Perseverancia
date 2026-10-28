@@ -6,6 +6,8 @@ import { createRocks } from './rocks.js';
 import { createMoons } from './moons.js';
 import { createDust } from './dust.js';
 import { createRover } from './rover.js';
+import { createMissionControl } from './missionControl.js';
+import { createCameras } from './cameras.js';
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -56,6 +58,8 @@ scene.add(createMoons(camera));
 const dust = createDust();
 scene.add(dust);
 const rover = createRover(scene);
+createMissionControl();
+const cameras = createCameras({ rover, camera, renderer, scene });
 const followed = new THREE.Vector3().copy(rover.object.position);
 const delta = new THREE.Vector3();
 const chase = new THREE.Vector3();
@@ -90,6 +94,7 @@ const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   step(Math.min(clock.getDelta(), 0.05));
   dust.userData.update(clock.elapsedTime, camera);
+  cameras.update(clock.elapsedTime);
   renderer.render(scene, camera);
 });
 
